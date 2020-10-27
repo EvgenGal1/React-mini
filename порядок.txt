@@ -1,0 +1,176 @@
+0. Проверить есть ли на компьютере node.js и npm. (в терминале $$ node -v и $$ npm -v)
+1. $$ npm init (npm init -y)
+	инициализация. 
+	создаёться файл package.json - описание проекта и все установленные зависимости
+2. $$ npm install webpack
+	установка webpack - модульный сборщик, упаковка, компиликтовка и организация ресурсов для проекта.
+	создаёться папка node_modules - пакеты, установленные вручную, и их зависимости.
+3. Создать в корне проекта webpack.config.js - настройка webpack.
+	//
+	const path = require("path");
+	const webpack = require('webpack');
+	module.exports = {
+		entry: {
+			app: './index.js',
+		},
+		context: path.resolve(__dirname, "static_src"),
+		output: {
+			path: path.resolve(__dirname, "static", "build"),
+			filename: 'app.js',
+		},
+	};
+	//
+4. Создать в корне папку static_src и файл index.js в ней.
+5. $$ npm install -D webpack-cli
+	установка webpack-cli 
+6. написать в файл package.json скрипт "build": "webpack" в разделе scripts и сохранить.
+	удалить "test": "echo ...
+7. $$  npm run build
+	Появляеться static/build/app.js. Содержимое файла app.js автоматически минимизируется.
+8. $$ npm install webpack-dev-server 
+	установка webpack-dev server - статический сервер, раздача содержимого проекта
+9. Создадим в корне файл index.html
+	//
+	<!DOCTYPE html>
+	<html lang="ru">
+	<head>
+		<meta charset="UTF-8">
+		<title>React</title>
+	</head>
+	<body>
+	<h1>Курс по ReactJS</h1>
+	</body>
+	</html>
+	//
+	Подключим app.js в index.html.
+	//
+	<script src="/static/build/app.js"></script>
+	//
+	теперь webpack-dev-server будет отслеживать любые изменения в файлах и на лету пересобирать приложение
+10. Чтобы запускать сборку и сервер было проще, можно прописать соответствующие скрипты в package.json.
+	//
+	"scripts": {
+		"start": "webpack --mode development",
+		"server": "webpack-dev-server"
+	},
+	//
+	$$ npm run start
+	$$ npm run server
+	При таком запуске сборки обратите внимание, что теперь app.js получается не минимизированным, так как в скрипте start указан ключ --mode development
+11. Импорт JS-файлов друг в друга 
+	Создадим новый файл: static_src/script.js
+	пропишем:
+	//
+	export function script() {
+		console.log('Это файл script.js');
+	}
+	//
+	в static_src/index.js пропишем:
+	//
+	import { script } from './script';
+	script();
+	console.log('А это index.js');
+	//
+	Таким образом, начиная сборку с entry, указанного в webpack.config.js, webpack следует импортам и собирает все файлы в один единственный app.js.
+12. Babel - loader, преобразуют исходный код модулей, заменяет весь новый код на старый, эквивалент для старых браузеров.
+	$$ npm install @babel/cli @babel/core @babel/preset-env babel-loader
+	настройки webpack.config.js
+	//
+	module.exports = {
+		module: {
+			rules: [
+				{
+						test: /\.(js|jsx)$/,
+						include: path.resolve(__dirname, "static_src"),
+						loader: 'babel-loader',
+						exclude: /node_modules/,
+						options: {
+							presets: ['@babel/env'],
+						}
+				},
+			],
+		},
+	}
+	//
+13. React.js — это фреймворк для создания интерфейсов. работает по принципу реактивного программирования, то есть позволяет создавать динамические страницы с возможностью обновлений состояний
+	установка react
+	$$ npm install react react-dom
+13.1  Простейшее приложение на React
+	в файле index.js напишем простейший код на React
+	//
+	import React from 'react';
+	import ReactDOM from 'react-dom';
+	const element = React.createElement(
+		'h1',
+		{ className: "element" },
+		'Кажется, мы подключили React',
+	);
+
+	ReactDOM.render(
+		element,
+		document.getElementById('root'),
+	);
+	//
+	Здесь создается элемент <h1 class="element">. Кажется, мы подключили React</h1>, который потом вставляется в элемент с id="root". Добавим такой элемент в index.html.
+	//
+	<div id="root"></div>
+	//
+	Запускаем npm run start
+14. JSX - синтаксический сахар для функции React.createElement(component, props, ...children). Это позволяет писать верстку в html-формате внутри JS-файлов.
+	заменяем на
+	//
+	const element = <h1 className="element">Кажется, мы подключили React</h1>;
+	//
+15. Чтоб не получить ошибку: ERROR in ./index.js Module build failed(ошибка сборки модуля)..., изза того что JavaScript не знает синтаксиса html, установим пресет для React, чтобы с помошью babel смогли переделать JSX во что-то понятное обычному JavaScript.
+	$$ npm install @babel/preset-react
+	добавить в webpack.config.js
+	//
+	module: {
+			rules: [
+				{
+						query: {
+						presets: ['@babel/env', '@babel/react'],
+						}
+				},
+			],
+		},
+	}
+	//
+	так не сработало.
+	рабочий
+	//
+	options: {
+          presets: ["@babel/env", "@babel/react"],
+      	}
+	//
+16. Тип элемента со строчной буквы - встроенный компонент(<div> или <span>), передается в виде строки 'div' или 'span' в функцию React.createElement. Типы с прописной буквы(<Foo />), компилируются как React.createElement(Foo), ссылаются на компонент, определенный или импортированный в вашем JavaScript-файле. Примере на основе функциональных компонентов.
+17. Функциональные компоненты позволяют отделить верстку от содержимого. В отличие от обычных элементов, которые объявляются как переменные, функциональные компоненты нужно объявлять в виде функций. static_src/index.js:
+	//
+	const content = 'Кажется, мы всё ещё подключаем React';
+	const Component = (props) => <h1 className="element">{props.content}</h1>;
+	ReactDOM.render(
+		<Component content={ content } />,
+		document.getElementById('root_2'),
+	);
+	//
+	Передаём текст в качестве аргумента, что позволит переиспользовать функциональный компонент (определяется с большой буквы). Вызывается с помощью синтаксиса JSX, а переменные, которые передаются в него, попадают в словарь props.
+18. Реализация, компонентов сообщений в рамках мессенджера.
+	static_src/index.js:
+	//
+	let messages = ['Привет', 'Как дела?'];
+	const MessageComponent = (props) => <div>{props.text}</div>;
+	const MessageField = (props) => {
+		return props.messages.map(message => <MessageComponent text={ message } />);
+	};
+	ReactDOM.render(
+		<MessageField messages={ messages } />,
+		document.getElementById('root'),
+	);
+	//
+19. Переименуем файл index.js в index.jsx. Впоследствии будем ко всем файлам, использующим синтаксис JSX, применять это расширение.
+20. Перед заливкой удалять (?dist?) node_modules(исполнительные файлы тех модулей 
+	которые мы устанавливаем).
+	возвращаем исполн. файлы после залявки (равнозначно install - i)
+	$$  npm i
+
+	в webpack.config.js не помню от куда взялся в output:{ вот это - publicPath: "/static/build/"

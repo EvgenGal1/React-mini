@@ -1,3 +1,9 @@
+webpack.react.message.
+Чуть подробнее можно почитать в D:\Про\Курсы-ДЗ\Geekbrains\Frond end разраб\React\[1-8]\Методичкa.pdf
+
+
+	1.Урок
+
 0. Проверить есть ли на компьютере node.js и npm. (в терминале $$ node -v и $$ npm -v)
 1. $$ npm init (npm init -y)
 	инициализация. 
@@ -175,6 +181,6 @@
 
 	в webpack.config.js не помню от куда взялся в output:{ вот это - publicPath: "/static/build/"
 
+	2.Урок
 
-
-Чуть подробнее можно почитать в D:\Про\Курсы-ДЗ\Geekbrains\Frond end разраб\React\1.введение\Методичка 1.Введение в ReactJS.pdf
+1. 

@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-// // до JSX
+// до JSX
 // const element = React.createElement(
 //   "h1",
 //   { className: "element" },

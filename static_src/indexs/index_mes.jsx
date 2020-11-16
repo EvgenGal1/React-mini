@@ -1,3 +1,6 @@
+import React from "react";
+import ReactDOM from "react-dom";
+
 // Компоненты сообщений в рамках мессенджера
 let messages = ["Привет", "Как дела?"];
 const MessageComponent = (props) => <div>{props.text}</div>;

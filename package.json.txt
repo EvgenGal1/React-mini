@@ -1,0 +1,38 @@
+настройка package.json
+
+// имя приложения (пакета)
+"name": "webpack.react",
+"version": "1.0.0",
+// краткое описание приложения
+"description": "My zaeb",
+// точка входа в приложение
+"main": "index.js",
+// задаёт набор Node.js-скриптов, которые можно запускать
+"scripts": {
+	// start, server(build,) ярлыки(сокрашения) для npm run
+	// webpack - для сборки проекта
+	// webpack-dev-server - `сервер разработки веб-пакетов (живая перезагрузка браузера)
+	// open - открытие страницы
+	// mode development - режим разработки
+	// mode production - режим производства
+	"start": "webpack --mode development",
+	"server": "webpack-dev-server --open --mode development"
+},
+"keywords": [],
+Автор
+"author": "Evgen",
+"license": "ISC",
+// dependencies — npm-пакеты, от которых зависит приложение.
+// devDependencies — npm-пакетs, для разработке проекта, но не при его реальной работе.
+"devDependencies": {
+	"@babel/cli": "^7.12.1",
+	"@babel/core": "^7.12.3",
+	"@babel/preset-env": "^7.12.1",
+	"@babel/preset-react": "^7.12.1",
+	"babel-loader": "^8.1.0",
+	"path": "^0.12.7",
+	"react": "^17.0.1",
+	"react-dom": "^17.0.1",
+	"webpack": "^5.4.0",
+	"webpack-cli": "^4.2.0",
+	"webpack-dev-server": "^3.11.0"

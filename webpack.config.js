@@ -53,7 +53,7 @@ module.exports = {
       },
     ],
   },
-  // настройка devservera
+  // настройка devServera
   devServer: {
     // показ ошибок(красным) на самой странице(не в консоли)
     overlay: true,

@@ -212,15 +212,37 @@ webpack.react.message.
 	Из-pf большого кол-ва компонентов, React передает переменные, от верхнего компон. к нижнему, 
 	но не наоборот. React-компоненты со своим жизненным циклом, состоянием (state) и 
 	строго иерархическим взаимодействием — это основа фреймворка React. 
-2. Пишем простейший ReactComponent.  В пути будут лежать все наши компоненты.  
+2. Пишем простейший ReactComponent. В пути будут лежать все наши компоненты.  
 	В классе компонента обязательно должна быть реализована функция render(). 
 	То, что возвращает эта функция, как раз и выводится на экран.
-	/static_src/components/App.jsx
-3. В static_src/components/App.jsx, после .... React.Component {
+	Создаём /static_src/components/App.jsx
+	//
+	import React from 'react' ;
+	export default class App extends React. Component {
+		render () {
+			return (
+				<h1> Наш первый React-компонент </h1>
+			)
+		}
+	}
+	//
+	добавляем его в index.jsx
+	//
+	import App from './components/App.jsx' ;
+		ReactDOM. render (
+		<App /> ,
+		document.getElementById('root'),
+	);	
+	//
+3. Добавим state в компонент App и будем использовать его в рендере компонента: 
+	static_src/components/App.jsx, после .... React.Component {
 	//
 	state = {
 		text : 'Наш первый React-компонент'
 	} ;
+	//
+	//
+	<h1>{this.state.text}</h1>
 	//
 4. $$ npm install @babel/plugin-proposal-class-propertiesnpm install @babel/plugin-proposal-class-properties
 	Ещё один babel, для обработки синтаксиса, пока не доступтного JS
@@ -242,4 +264,53 @@ webpack.react.message.
 6. Теперь, при запуске сервера и открытие в браузере приложения, тект, через секунду изменится.
 	Обновление state влечет за собой повторный вызов функции render(), и компонент перерисовывается. 
 	На самом деле вызывается не только функция render() , но об этом позже.
-7. Хуки
+7. Хуки — это функции, с помощью которых вы можете «подцепиться» к состоянию и 
+	методам жизненного цикла React из функциональных компонентов. 
+	Хуки не работают внутри классов — они дают вам возможность использовать React без классов.
+	Подоробнее https://ru.reactjs.org/docs/hooks-intro.html
+	Функциональные компоненты можно наделить состоянием, с помощью хуков.
+	Жизненный цикл компонента представляет собой вызов ряда методов компонента перед определенными событиями или после них: 
+	componentWillMount - функция вызывается перед тем, как компонент будет отрисован,
+	render - ф-я отрисовывает компонент и вызывается при каждом последующем обновлении state, 
+	componentDidMount - функция вызывается сразу после первой отрисовки компонента на странице,
+	componentDidUpdate - функция вызывается при обновлениях после перерисовки
+	componentWillUnmoun - функция, которая вызывается при удалении компонента со страницы.
+	В static_src/components/App.jsx
+	//
+	componentWillMount() {
+		console.log('componentWillMount');
+	}
+	componentDidMount () {
+		console.log('componentDidMount');
+		setTimeout(() => this.setState({'text':'Обновленный React-компонент'}),
+	1000);
+	}
+	componentDidUpdate() {
+		console.log('componentDidUpdate');
+	}
+	//
+	state переносим из render в componentDidMount
+8. Вложенность компонентов, props и propTypes
+	создаём static_src/components/Child.jsx
+	//
+	import React from 'react' ;
+	export default class Child extends React. Component {
+		componentWillMount() {
+			console.log('Child componentWillMount');
+		}
+		componentDidMount() {
+			console.log('Child componentDidMount');
+		}
+		componentDidUpdate() {
+			console.log('Child componentDidUpdate');
+		}
+		render() {
+			console.log('Child render');
+			return(
+				<h1>Это компонент Child</h1>
+			)
+		}
+	}
+	//
+9.	Вложим Child.jsx в App.jsx. Передадим счетчик в качестве props, добавим кнопку, для увеличения счетчика на единицу.
+	В static_src/components/App.jsx

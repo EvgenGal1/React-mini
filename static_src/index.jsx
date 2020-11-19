@@ -16,7 +16,13 @@ import ReactDOM from 'react-dom';
 import '/indexs/index_les.jsx';
 import "/indexs/index_mes.jsx";
 //?  Почему то не работает вместе с indexs. Перебивается ими
+
+// 2. Используется export default вместо просто export . Поэтому мы импортируем компонент 
+// без использования фигурных скобок. При этом не обязательно называть импортируемую переменную 
+// так же, как экспортируемую. Например, мы могли бы сделать так:
+// import DefaultExport from './components/App.jsx';
 import App from './components/App.jsx';
+
 ReactDOM.render(
 	<App />,
 	document.getElementById('root_4') ,

@@ -262,19 +262,16 @@ webpack.react.message.
 	В static_src/components/App.jsx в render(){ перед return
 	setTimeout(() => this.setState({ 'text': 'Обновленный React-компонент' }), 1000);
 6. Теперь, при запуске сервера и открытие в браузере приложения, тект, через секунду изменится.
-	Обновление state влечет за собой повторный вызов функции render(), и компонент перерисовывается. 
+	Обновление state влечет за собой повторный вызов функции render(), и компонент перерисовывается.
 	На самом деле вызывается не только функция render() , но об этом позже.
-7. Хуки — это функции, с помощью которых вы можете «подцепиться» к состоянию и 
-	методам жизненного цикла React из функциональных компонентов. 
+7. Хуки — это функции, с помощью которых вы можете «подцепиться» к состоянию и методам жизненяного цикла React из функциональных компонентов. 
 	Хуки не работают внутри классов — они дают вам возможность использовать React без классов.
 	Подоробнее https://ru.reactjs.org/docs/hooks-intro.html
-	Функциональные компоненты можно наделить состоянием, с помощью хуков.
-	Жизненный цикл компонента представляет собой вызов ряда методов компонента перед определенными событиями или после них: 
-	componentWillMount - функция вызывается перед тем, как компонент будет отрисован,
-	render - ф-я отрисовывает компонент и вызывается при каждом последующем обновлении state, 
+	Функциональные компоненты можно наделить состоянием, с помощью хуков. Жизненный цикл компонента представляет собой вызов ряда методов компонента перед определенными событиями или после них: componentWillMount - функция вызывается перед тем, как компонент будет отрисован, 
+	render - ф-я отрисовывает компонент и вызывается при каждом последующем обновлении state,
 	componentDidMount - функция вызывается сразу после первой отрисовки компонента на странице,
 	componentDidUpdate - функция вызывается при обновлениях после перерисовки
-	componentWillUnmoun - функция, которая вызывается при удалении компонента со страницы.
+	componentWillUnmoun - функция, которая вызывается при далении компонента со страницы.
 	В static_src/components/App.jsx
 	//
 	componentWillMount() {
@@ -290,8 +287,18 @@ webpack.react.message.
 	}
 	//
 	state переносим из render в componentDidMount
+7.1 Браузер. Консоль разработчика.
+	//
+	componentWillMount
+	render
+	componentDidMount
+	[WDS] Live Reloading enabled.
+	render
+	componentDidUpdate
+	//
+	Второй вызов render и последующий componentDidUpdate были осуществлены после обновления state через секунду после отрисовки компонента.
 8. Вложенность компонентов, props и propTypes
-	создаём static_src/components/Child.jsx
+	Создаём static_src/components/Child.jsx с таким же жизненным циклом.
 	//
 	import React from 'react' ;
 	export default class Child extends React. Component {
@@ -312,5 +319,77 @@ webpack.react.message.
 		}
 	}
 	//
-9.	Вложим Child.jsx в App.jsx. Передадим счетчик в качестве props, добавим кнопку, для увеличения счетчика на единицу.
+9.	Вложим Child.jsx в App.jsx. 
+	Передадим счетчик в качестве props, добавим кнопку, для увеличения счетчика на единицу.
 	В static_src/components/App.jsx
+	//
+	import Child from './Child.jsx';
+	state = {
+		text: 'Наш первый React-компонент' ,
+		counter: 0,
+	};
+	.....
+	handleClick = () => {
+		this . setState ({ 'counter': this.state.counter + 1 })
+	};
+	render () {
+		console.log ('render') ;
+		return (
+			<div>
+				<h1>{this.state.text}</h1>
+				<Child counter={ this.state.counter }/>
+				<button onClick = { this.handleClick }>+1</button>
+			</div>
+		)
+	}
+	//
+	handleClick - стрелочная ф-я, благодаря этому используется контекст компонента App для переменной this внутри нее. Обычная ф-я внутри компонента, «теряется» контекст. Его нужно будет привязать в конструкторе командой this.handleClick.bind(this).
+	Компонент Child получает counter в качестве props, который будет увеличиваться на 1 при каждом нажатии на кнопку. Обернули все в <div>, так как render возвращает либо один элемент, либо массив элементов.
+10. Можно импортировать jsx-файлы без расширения - import Child from './Child'. Добавим в webpack.config.js следующую настройку:
+	//
+	const webpack = require( 'webpack' ) ;
+	module.exports = {
+		.....
+		resolve: {
+			modules: [`${__dirname} /static_src`, 'node_modules'],
+			extensions: ['.js', '.jsx'],
+		},
+	};
+	//
+11. Получим переданный props :
+	static_src/components/Child.jsx
+	//
+	return (
+			<h1>Это компонент Child, counter: { this.props.counter}</h1>
+		)
+	//
+11.1 Браузер. Консоль разработчика.
+	//
+	componentWillMount
+	render
+	Child	componentWillMount
+	Child render
+	Child componentDidMount
+	componentDidMount
+	[WDS] Live Reloading enabled
+	//
+	Внимание на последовательность вызова функций в родительском (App.jsx) и дочернем (Child.jsx) компонентах.
+	Нажмём кнопку +1:
+	Браузер. Консоль разработчика.
+	//
+	componentWillMount
+	render
+	Child	componentWillMount
+	Child render
+	Child componentDidMount
+	componentDidMount
+	[WDS] Live Reloading enabled
+	render
+	Child render
+	Child componentDidUpdate
+	componentDidUpdate
+	//
+	Внимание на последовательность вызова функций.
+	В данном случае дочерний компонент был перерисован, так как перерендерился родительский в результате изменения state.
+	Обновление React-компонента происходит не только при обновлении state, но и при изменении props. В целом, набор state и props определяет состояние компонента, изменение которого приводит к его перерисовке. Чтобы принудительно обновить компонент, то можно воспользоваться функцией forceUpdate().
+12. PropTypes

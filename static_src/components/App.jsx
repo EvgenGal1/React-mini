@@ -27,7 +27,8 @@ export default class App extends React.Component {
 		console.log('componentDidUpdate');
 	}
 
-	// 2. После Child.jsx
+	// 2. После Child.jsx. 
+	// Стрелочная ф-ия для использ контеста компонента
 	handleClick = () => {
 		this.setState({ 'counter': this.state.counter + 1 })
 	};
@@ -44,9 +45,9 @@ export default class App extends React.Component {
 			// <h1>{this.state.text}</h1>
 			// 2. После Child.jsx
 			<div>
-				<h1> {this.state.text} </h1>
+				<h1>{this.state.text}</h1>
 				<Child counter={this.state.counter} />
-				<button onClick={this.handleClick} > +1 </button>
+				<button onClick={this.handleClick}>+1</button>
 			</div>
 		)
 	}

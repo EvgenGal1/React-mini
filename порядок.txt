@@ -392,4 +392,16 @@ webpack.react.message.
 	Внимание на последовательность вызова функций.
 	В данном случае дочерний компонент был перерисован, так как перерендерился родительский в результате изменения state.
 	Обновление React-компонента происходит не только при обновлении state, но и при изменении props. В целом, набор state и props определяет состояние компонента, изменение которого приводит к его перерисовке. Чтобы принудительно обновить компонент, то можно воспользоваться функцией forceUpdate().
-12. PropTypes
+12. Для контроля типов передаваемых в компонент props’ ов можно использовать стороннюю библиотеку
+PropTypes.
+	$$ npm install prop-types
+	В static_src/components/Child.JSX
+	//
+	import PropTypes from 'prop-types';
+	export default class Child extends React.Component {
+		static propTypes = {
+			counter: PropTypes.number ,
+		};
+	.....
+	}	
+	//

@@ -2,6 +2,9 @@ import React from 'react';
 
 // 2.
 export default class Child extends React.Component {
+	static propTypes = {
+		counter: PropTypes.number,
+	};
 	componentWillMount() {
 		console.log('Child componentWillMount');
 	}

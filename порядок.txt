@@ -330,7 +330,7 @@ webpack.react.message.
 	};
 	.....
 	handleClick = () => {
-		this . setState ({ 'counter': this.state.counter + 1 })
+		this.setState ({ 'counter': this.state.counter + 1 })
 	};
 	render () {
 		console.log ('render') ;
@@ -392,7 +392,7 @@ webpack.react.message.
 	Внимание на последовательность вызова функций.
 	В данном случае дочерний компонент был перерисован, так как перерендерился родительский в результате изменения state.
 	Обновление React-компонента происходит не только при обновлении state, но и при изменении props. В целом, набор state и props определяет состояние компонента, изменение которого приводит к его перерисовке. Чтобы принудительно обновить компонент, то можно воспользоваться функцией forceUpdate().
-12. Для контроля типов передаваемых в компонент props’ ов можно использовать стороннюю библиотеку
+12. Для контроля типов передаваемых в компонент propsов можно использовать стороннюю библиотеку
 PropTypes.
 	$$ npm install prop-types
 	В static_src/components/Child.JSX
@@ -405,3 +405,63 @@ PropTypes.
 	.....
 	}	
 	//
+12.1 НЕПОНЯТНО!!!
+	если counter окажется строкой, увидим ошибку в панели разработчика
+	isRequired означает, что counter обязательно должен быть передан в Child . Если мы забудем
+передать его, то опять увидим ошибку:
+	см. pdf - D:\Про\Курсы-ДЗ\Geekbrains\Frond end разраб\React\2. компоненты(Mes,Mese,ChaIn)\Методичка 2.pdf 
+	Но если какой-то props не обязательно передавать в компонент, то можно задать значение по
+умолчанию ( isRequired в таком случае нужно убрать):
+	см. pdf - D:\Про\Курсы-ДЗ\Geekbrains\Frond end разраб\React\2. компоненты(Mes,Mese,ChaIn)\Методичка 2.pdf
+	static_src/components/Child.jsx
+	//
+	import React from 'react' ;
+	import PropTypes from 'prop-types' ;
+	export default class Child extends React. Component {
+		static propTypes = {
+			counter : PropTypes. number ,
+		} ;
+		defaultProps = {
+			counter : 0 ,
+		};
+	...
+	}
+	//
+13. Начало разработки мессенджера
+	Разработаем интерфейс для мессенджера. Реализуем возможность отправлять сообщение с одним и тем же текстом по нажатию кнопки.
+	Необходим компонент сообщения static_src/components/Message.jsx:
+	//
+	import React from 'react';
+	import PropTypes from 'prop-types';
+	export default class Message extends React.Component {
+		static propTypes = {
+			text: PropTypes.string.isRequired,
+		};
+		render() {
+			return <div> {this.props.text} </div>
+		}
+	}
+	//
+13.1 Еще нужен компонент, в котором будет кнопка отправки сообщения, а также сами сообщения в качестве дочерних компонентов.
+	static_src/components/MessageField.jsx
+	//
+	import React from 'react' ;
+	import Message from './Message' ;
+	export default class MessageField extends React. Component {
+		state = {
+			messages : [ "Привет!" , "Как дела?" ]
+		} ;
+		handleClick = () => {
+			this.setState ({ messages: [ ... this.state.messages, 'Нормально' ] }) ;
+		} ;
+		render () {
+			const messageElements = this . state . messages . map ((text , index) => (
+				<Message key = { index } text = { text } /> )) ;
+		return <div>
+			{ messageElements }
+			<button onClick = { this.handleClick } > Отправить сообщение </button>
+			</div>
+		}
+	}
+	//
+13.2 В state MessageField храним тексты сообщений..............

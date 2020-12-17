@@ -13,14 +13,16 @@ import ReactDOM from 'react-dom';
 // window.React = requre('react')	
 
 //?  Почему то не работает вместе с App. Перебивают его
-import '/indexs/index_les.jsx';
-import "/indexs/index_mes.jsx";
+import './indexs/index_les.jsx';
+import "./indexs/index_mes.jsx";
 //?  Почему то не работает вместе с indexs. Перебивается ими
 
 // 2. Используется export default вместо просто export . 
 // Поэтому мы импортируем компонент без использования фигурных скобок. При этом не обязательно называть импортируемую переменную так же, как экспортируемую. Например, мы могли бы сделать так:
 // import DefaultExport from './components/App.jsx';
-import App from './components/App.jsx';
+// до 13.3 import App from './components/App.jsx';
+// 13.3
+import App from './components/MessageField';
 
 ReactDOM.render(
 	<App />,

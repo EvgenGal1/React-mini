@@ -7,7 +7,7 @@ export default class Child extends React.Component {
 	static propTypes = {
 		counter: PropTypes.number,
 	};
-	//? 2.12.1 ХЗ ВООБЩЕ ЧТО И КАК
+	//? 2.12.1 ХЗ ВООБЩЕ ЧТО И КАК?
 	defaultProps = {
 		counter: 0,
 	};

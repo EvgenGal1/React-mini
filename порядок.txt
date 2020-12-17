@@ -39,6 +39,7 @@ webpack.react.message.
 	Появляеться static/build/app.js. Содержимое файла app.js автоматически минимизируется.
 8. $$ npm install webpack-dev-server
 	^ - значок автоматически обновляет версию.
+	Cпасибо Травнику, починили npm run server. Дело было в разных версиях webpack, webpack-cli и webpack-dev-server. Переустановили их без ^. Перед этим полностью удалили node_modules
 	установка webpack-dev server - статический сервер, раздача содержимого проекта
 9. Создадим в корне файл index.html
 	//

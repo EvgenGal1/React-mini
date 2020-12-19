@@ -10,7 +10,7 @@ import ReactDOM from "react-dom";
 // 1. после JSX
 const element = <h1 className="element">Кажется, мы подключили React</h1>;
 
-ReactDOM.render(element, document.getElementById("root"));
+ReactDOM.render(element, document.getElementById("root_1"));
 
 // 1. Функциональные компоненты. отделяют вёрстку от содержимого.
 // Объявляются в виде функций(обычные элементы - как переменные). 

@@ -50,6 +50,11 @@ module.exports = {
         //     presets: ["@babel/env", "@babel/react"],
         //   },
       },
+      {
+        // 3.3 CSS loader’ы, позволят обрабатывать CSS-файлы при сборке
+        test: /\.css$/,
+        loader: "style-loader!css-loader",
+      },
     ],
   },
   // 1. настройка devServera
@@ -58,7 +63,7 @@ module.exports = {
     overlay: true,
   },
 
-  // 2. Для импортирта jsx-файлы без расширения
+  // 2.10 Для импорта jsx-файлов без расширения
   resolve: {
     modules: [`${__dirname} /static_src`, "node_modules"],
     extensions: [".js", ".jsx"],

@@ -20,14 +20,25 @@ import "./indexs/index_mes.jsx";
 // 2. Используется export default вместо просто export . 
 // Поэтому мы импортируем компонент без использования фигурных скобок. При этом не обязательно называть импортируемую переменную так же, как экспортируемую. Например, мы могли бы сделать так:
 // import DefaultExport from './components/App.jsx';
-// до 13.3 import App from './components/App.jsx';
-// 13.3
-import App from './components/MessageField';
+// до 2.13 import App from './components/App.jsx';
+// 2.13
+import App from './components/App.jsx';
 
 ReactDOM.render(
-	<App />,
-	document.getElementById('root_4') ,
+	<App />, document.getElementById('root_4')
 );
+
+import MessageField from './components/MessageField.jsx';
+
+ReactDOM.render(
+	<MessageField />, document.getElementById('root')
+);
+
+// import Message from './components/Message.jsx';
+
+// ReactDOM.render(
+// 	<Message />, document.getElementById('root')
+// );
 
 
 

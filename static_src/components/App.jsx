@@ -1,5 +1,5 @@
 import React from 'react';
-// import ReactDOM from "react-dom";
+import ReactDOM from "react-dom";
 // 2.. импорт компонента Child
 import Child from './Child.jsx';
 

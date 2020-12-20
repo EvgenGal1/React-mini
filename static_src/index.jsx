@@ -1,5 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import App from './components/App.jsx';
+import MessageField from './components/MessageField.jsx';
+// import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 // Как можно подключать файлы в index.js:
 // 1. ищет в текущей дериктории, затем в node_modules, из которого пройдет по пути из настроек,
@@ -22,17 +25,22 @@ import "./indexs/index_mes.jsx";
 // import DefaultExport from './components/App.jsx';
 // до 2.13 import App from './components/App.jsx';
 // 2.13
-import App from './components/App.jsx';
 
 ReactDOM.render(
 	<App />, document.getElementById('root_4')
 );
 
-import MessageField from './components/MessageField.jsx';
 
 ReactDOM.render(
 	<MessageField />, document.getElementById('root')
 );
+
+// ReactDOM.render(
+// 	<MuiThemeProvider>
+// 		<MessageField />
+// 	</MuiThemeProvider>,
+// 	document.getElementById('root'),
+// );
 
 // import Message from './components/Message.jsx';
 

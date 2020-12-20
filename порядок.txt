@@ -350,8 +350,8 @@ webpack.react.message.
 		return (
 			<div>
 				<h1>{this.state.text}</h1>
-				<Child counter={ this.state.counter }/>
-				<button onClick = { this.handleClick }>+1</button>
+				<Child counter={this.state.counter}/>
+				<button onClick={this.handleClick}>+1</button>
 			</div>
 		)
 	}
@@ -433,7 +433,7 @@ webpack.react.message.
 		defaultProps = {
 			counter : 0 ,
 		};
-	...
+	.....
 	}
 	//
 2.13 Начало разработки мессенджера
@@ -462,7 +462,7 @@ webpack.react.message.
 			messages : [ "Привет!", "Как дела?" ]
 		} ;
 		handleClick = () => {
-			this.setState ({ messages: [ ... this.state.messages, 'Нормально' ] }) ;
+			this.setState ({ messages: [... this.state.messages, 'Нормально' ] }) ;
 		} ;
 		render() {
 			const messageElements = this.state.messages.map ((text, index) => (
@@ -497,14 +497,14 @@ webpack.react.message.
 	import React from 'react' ;
 	import Message from './Message' ;
 	export default class MessageField extends React. Component {
-		...
+		.....
 		componentDidUpdate () {
 			setTimeout (() =>
 			this . setState (
-				{ messages : [ ... this . state . messages , 'Не приставай ко мне, я робот!'
+				{ messages : [... this . state . messages , 'Не приставай ко мне, я робот!'
 			] }) , 1000 ) ;
 		}
-		...
+		.....
 	}
 	//
 	##
@@ -591,7 +591,7 @@ webpack.react.message.
 			<Message text={message.text} sender={message.sender} key={index} />));
 		return <div>
 			{messageElements}
-			<button onClick={this.handleClick} > Отправить сообщение </button>
+			<button onClick={this.handleClick}>Отправить сообщение</button>
 		</div>
 	}
 	//
@@ -631,23 +631,23 @@ webpack.react.message.
 	Добавим в webpack.config.js
 	//
 	rules: [
-		...
+		.....
 		{
 			test : /\.css$/,
 			loader : 'style-loader!css-loader',
 		},
 	]
 	//
-	@  -  внешний вид
-	@
+	@@  -  внешний вид
+	@@
 	Теперь есть заливка смс цветом. Причем её можно отследить по структуре документа в панели разработчика. Стили подключены при помощи тега <style> в шапке документа.
-	@
+	@@
 	##
 	<head>
-		...
+		.....
 		<style>
 			.message-field {
-			...
+			.....
 			}
 		</style>
 	</head>
@@ -717,7 +717,7 @@ webpack.react.message.
 	<body style="height: 100%; margin: 0">
 	<div style="height: 100%" id="root"></div>
 	//
-	@
+	@@
 	Привет!
 	bot
 												Ку!
@@ -725,9 +725,212 @@ webpack.react.message.
 	Как дела
 	bot
 				Отправить сообщение
-	@
-3.6 Обработка событий.
+	@@
+	???НЕ совсем понятно выпадение страницы в ноль при отключение root_ на горячую. При откл. из index.jsx норм. А при откл из index.html после обновления пропадает всё???
+3.6 Обработка событий. Для возможности писать разные сообщения, а не отправлять одно и то же. Для этого в React есть события и их обработчики.
+	React стандартизирует все браузерные события при помощи SyntheticEvent, что позволяет событиям работать одинаково во всех браузерах. Для обработки событий нужно передать атрибут в JSX-тег в camelCase-стиле по шаблону: onИмяСобытия (например, onClick), — и передать в него функцию-обработчик.
+	Важно! Обработчики событий работают только для базовых компонентов React(div, button и т.д.).Для созданных нами компонентов они работать не будут.
+3.6.1 onClick(`по щелчку`). Этот обработчик мы уже используем для отправки сообщений
+	//
+	<button onClick = {this.handleClick} >Отправить сообщение</button>
+	.....
+	handleClick = () => {
+		this.setState ({ messages: [... this.state.messages, {text: 'Нормально', sender: 'me'}]});
+	};
+	//
+	Чтобы передавать сообщение в качестве аргумента функции handleClick, то нужно будет сделать промежуточную стрелочную функцию. Иначе handleClick вызовется, не дожидаясь самого клика.
+	//
+	<button onClick={() => this.handleClick('Нормально')}>Отправить сообщение</button>
+	.....
+	handleClick = (message) => {
+		this.setState({
+			messages: [... this.state.messages, { text: message, sender: 'me' }]
+		});
+	};
+	//
+3.6.2 onChange(`по изменению`). Для ввода сообщения необходимо текстовое поле. Любое изменение в текстовом поле, будь то написание нового символа или удаление уже написанного, генерирует событие, которое можно обработать при помощи onChange:
+	//
+	<input onChange = {this.handleChange} />
+	.....
+	handleChange = (event) => {
+		console.log(event.target.value);
+	};
+	//
+	???Пока ничего не записывал в код и не выводил???
+	Обратите внимание, что аргумент event по умолчанию попадает в функцию. В результате можно
+	увидеть следующее:
+	##
+	н
+	но
+	нор
+	норм
+	норма
+	.....
+	##
+3.6.3 onKeyUp(`на клавиатуре`). Чтобы отправлять сообщения с клавиатуры (Enter), с помощью обработчика onKeyUp, который будет вызываться при поднятии кнопки после нажатия на нее.
+	//
+	<input onChange = {this.handleChange} onKeyUp = {(event) => this.handleKeyUp(event,'Нормально')} />
+	.....
+	handleKeyUp = (event, message) => {
+		if (event.keyCode === 13) { // Enter
+			this.setState({
+				messages: [... this.state.messages, {text: message, sender: 'me'}]
+			});
+		}
+	};
+	//
+	Внимание на следующие моменты
+	1. event.keyCode позволяет получить уникальный код клавиши на клавиатуре, которую нажал пользователь. Узнать код любой клавиши можно https://keycode.info/
+	2. Так как обработчик onKeyUp «висит» на <input>, то обрабатываться нажатия кнопок будут только при фокусе на этом input’е.
+	3. Обрабатываться будут нажатия всех кнопок, а отсев нужной уже проводится внутри handleKeyUp.
+	Теперь можно отправлять сообщения Enter’ом. Правда, по-прежнему отправляется одно и то же сообщение, а не то, что мы ввели. Исправим это.
+3.4 Написание и отправка сообщения в мессенджере — реализация.
+	Реализуем такую функциональность:
+	1. Добавим state-переменную input и будем сохранять в нее текст, введенный пользователем, используя обработчик события onChange.
+	2. Переменную input будем передавать в качестве аргумента в handler’ы для onClick и onKeyUp.
+	static_src/components/MessageField.jsx
+	//
+	state = {
+		.....
+		input: '',
+	};
+	.....
+	handleClick = (message) => {
+		this.sendMessage(message)
+	};
+	handleChange = (event) => {
+		this.setState({input: event.target.value});
+	};
+	handleKeyUp = (event, message) => {
+		if (event.keyCode === 13) { // Enter
+			this.sendMessage(message)
+		}
+	};
+	sendMessage = (message) => {
+		this.setState({
+			messages: [... this.state.messages, {text: message, sender: 'me'}]
+		});
+	};
+	.....
+	//
+	@@
+	Привет!
+	bot
+												Ку!
+												me
+	Как дела
+	bot
+												текст
+												me
+	Не приставай ко мне, я робот!
+	bot
+				тект
+				Отправить сообщение
+	@@
+3.5 Хотелось бы еще очищать поле ввода после отправки сообщения. Для этого нужно не только читать то, что пользователь пишет в <input> при помощи onChange, но и самим контролировать, что там написано. А для этого — передавать переменную input из state в качестве параметра value и очищать эту переменную при отправке сообщения:
+	static_src/components/MessageField.jsx
+	//
+	sendMessage = (message) => {
+		.....
+		input : '' ,
+		}) ;
+	} ;
+	.....
+	value={this.state.input}
+	//
+3.5.1 Если в вашем интерфейсе будет несколько полей ввода (например, в форме регистрации), их можно обрабатывать одной и той же функцией. Для этого используют параметр name, который в JavaScript попадает в event. Нужно, чтобы переменная из state совпадала с name связанного с этой переменной input’а. Тогда можно применять name в качестве ключа в setState:
+	//
+	handleChange = (event) => {
+		this.setState({ [event.target.name]: event.target.value });
+	.....
+	<input
+		name ="input"
+	//
+3.6 Неуправляемые компоненты. Наша реализация обработки событий основана на управляемых компонентах, то есть данные формы обрабатываются React-компонентом. В большинстве случаев при работе с формами используют
+именно их.
+	В качестве альтернативы можно использовать неуправляемые компоненты. Они хранят данные формы прямо в DOM. Вместо того чтобы писать обработчик события для каждого обновления состояния, можно использовать неуправляемый компонент и читать значения из DOM через ref.
+	Рассмотрим работу ref’ов на примере реализации автофокуса на поле ввода. То есть при открытии приложения пользователь сразу же сможет начать вводить сообщение, не кликая предварительно мышью по полю.
+	Ref’ы создаются с помощью React.createRef() и прикрепляются к React-элементам через ref-атрибут.
+	теория
+	//
+	class MyComponent extends React.Component {
+		constructor(props) {
+			super(props);
+			this.myRef = React.createRef();
+		}
+		render() {
+			return <div ref={this.myRef} />;
+		}
+	}
+	//
+	Когда ref передается элементу в методе render, ссылка на данный узел становится доступна через свойство ref’а current.
+	//
+	const node = this .myRef. current ;
+	//
+3.6.1 Используя эту информацию, реализуем автофокус.
+	static_src/components/MessageField.jsx
+	//
+	constructor(props) {
+		super(props);
+		// создадим ref в поле `textInput` для хранения DOM-элемента
+		this.textInput = React.createRef();
+	}
+	.....
+	// Ставим фокус на <input> при монтировании компонента
+	componentDidMount() {
+		this.textInput.current.focus();
+	}
+	.....
+	ref={this.textInput}
+	//
+3.7 ???Не работает???
+	Подключение и использование Material-UI. Чтобы не верстать все компоненты с нуля, можно использовать библиотеки готовых компонентов. Существует несколько популярных UI-библиотек от разных компаний.
+	Material UI(https://material-ui.com/ru/) — библиотека от Google, которая позволяет создавать приложения в стиле Google Material Design с использованием компонентов React.
+	Ant Design(https://ant.design/docs/react/introduce) — это библиотека от Alibaba, основанная на React. Она разработана в Китае, но качественно переведена на английский, так что доступ к ней есть и у англоговорящих разработчиков.
+	React Bootstrap(https://react-bootstrap.github.io/) — библиотека от Twitter. В целом, семейство bootstrap является самым популярным фронтенд-фреймворком.
+	Grommet(https://v2.grommet.io/) — библиотека от HP. Она отличается красивыми визуализациями.
+	Рассмотрим Material-UI — она проста в подключении и использовании.
+3.7.1 Установим Material-UI:
+	$$ npm install material-ui
+	Чтобы библиотека заработала, нужно в самом верху нашего приложения разместить <MuiThemeProvider>
+	Добавим в static_src/index.jsx
+	//
+	import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider' ;
+	ReactDOM.render (
+		<MuiThemeProvider>
+			<MessageField />
+		</MuiThemeProvider>,
+		document.getElementById ('root'),
+	);
+	//
+	Это необходимо, чтобы библиотека Material могла контролировать тему всех своих компонентов. Под капотом это делается пробрасыванием props вниз. Именно поэтому компонент провайдера темы должен быть расположен вверху. Как это устроено, мы увидим в следующих уроках, когда будем работать с Redux.
+	Полный список компонентов можно посмотреть https://v0.material-ui.com/#/components/app-bar. 
+3.7.2 Мы будем использовать TextField, FloatingActionButton и иконку для верстки поля ввода и кнопки отправки:
+	Добавим в static_src/components/MessageField.jsx
+	//
+	import { TextField, FloatingActionButton } from 'material-ui';
+	import SendIcon from 'material-ui/svg-icons/content/send';
+	.....
+	<div style={{ width: '100%', display: 'flex' }} >
+		<TextField
+			name="input"
+			fullWidth={true}
+			hintText="Введите сообщение"
+			style={{ fontSize: '22px' }}
+			onChange={this.handleChange}
+			value={this.state.input}
+			onKeyUp={(event) => this.handleKeyUp(event,
+				this.state.input)}
+		/>
+		<FloatingActionButton onClick={() =>
+			this.handleClick(this.state.input)} >
+			<SendIcon />
+		</FloatingActionButton>
+	</div>
+	//
+	Обратите внимание, что кастомизация компонентов происходит путем передачи в них props’ов (fullWidth, hintText в примере выше). Полный список props для каждого компонента можно посмотреть в https://v0.material-ui.com/#/components/app-bar
+	В результате
+	@@
 
-
-
-???НЕ совсем понятно выпадение страницы в ноль при отключение root_ на горячую. При откл. из index.jsx норм. А при откл из index.html после обновления пропадает всё???
+	@@
+	???С 3.7 ВСЁ СЛОМАЛОСЬ???
